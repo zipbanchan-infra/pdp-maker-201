@@ -176,7 +176,7 @@ export function HanirumScreen() {
           <aside className={styles.qrCard}>
             <p className={styles.qrLabel}>휴대폰 카메라로 QR을 스캔해 주세요</p>
             {qrImageUrl ? (
-              <img alt="한이룸 체크인 QR 코드" className={styles.qrImage} src={qrImageUrl} />
+              <img alt="집반찬연구소 체크인 QR 코드" className={styles.qrImage} src={qrImageUrl} />
             ) : (
               <div className={styles.qrPlaceholder}>QR 생성 중</div>
             )}

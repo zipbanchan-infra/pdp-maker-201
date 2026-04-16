@@ -1,0 +1,1826 @@
+/* ── Zipbanchan Landing Page Components ── */
+
+.landingPreview {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  background: #faf8f3;
+  border-radius: 20px;
+  overflow: hidden;
+  font-family: "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  line-height: 1.6;
+  color: #2d2d2d;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Hero Banner ── */
+
+.heroBanner {
+  position: relative;
+  width: 100%;
+  padding: 60px 28px 52px;
+  text-align: center;
+  overflow: hidden;
+  min-height: 200px;
+}
+
+.heroBannerBg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.heroBannerOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.15) 0%,
+    rgba(0, 0, 0, 0.05) 40%,
+    rgba(0, 0, 0, 0.25) 100%
+  );
+}
+
+.heroBannerContent {
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.2);
+}
+
+.heroBannerTitle {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 900;
+  line-height: 1.25;
+  letter-spacing: -0.03em;
+  word-break: keep-all;
+}
+
+.heroBannerSubtitle {
+  margin: 12px 0 0;
+  font-size: 15px;
+  line-height: 1.7;
+  opacity: 0.85;
+  font-weight: 400;
+}
+
+.heroBannerIllustration {
+  display: block;
+  width: 85%;
+  max-width: 300px;
+  margin: 24px auto 0;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* ── Section Header ── */
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 28px 24px 12px;
+}
+
+.sectionHeaderIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #5b8c3e;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  flex-shrink: 0;
+  letter-spacing: -0.02em;
+}
+
+.sectionHeaderCopy {
+  flex: 1;
+  min-width: 0;
+}
+
+.sectionHeaderTitle {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: #2d2d2d;
+  letter-spacing: -0.02em;
+}
+
+.sectionHeaderSubtitle {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #888;
+  line-height: 1.4;
+}
+
+/* ── Food Card ── */
+
+.foodCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+}
+
+.foodCardImageCircle {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f0ede6, #e8e4db);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.foodCardImageSquare {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 14px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f0ede6, #e8e4db);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.foodCardImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.foodCardName {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #2d2d2d;
+  text-align: center;
+  word-break: keep-all;
+}
+
+.foodCardDescription {
+  margin: 0;
+  font-size: 11px;
+  color: #888;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.foodCardBadge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #e74c3c;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.foodCardPrice {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #5b8c3e;
+}
+
+/* ── Food Grid ── */
+
+.foodGrid {
+  padding: 8px 20px 16px;
+}
+
+.foodGridTitle {
+  margin: 0 0 12px 4px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #2d2d2d;
+}
+
+.foodGridInner {
+  display: grid;
+  gap: 12px;
+}
+
+.foodGridCols2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.foodGridCols3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* ── Food List ── */
+
+.foodList {
+  padding: 8px 24px 16px;
+}
+
+.foodListTitle {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #2d2d2d;
+}
+
+.foodListItem {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.foodListItem:last-child {
+  border-bottom: none;
+}
+
+.foodListItemImage {
+  width: 72px;
+  height: 72px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #eee;
+  flex-shrink: 0;
+}
+
+.foodListItemImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.foodListItemCopy {
+  flex: 1;
+  min-width: 0;
+}
+
+.foodListItemName {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2d2d2d;
+}
+
+.foodListItemDescription {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #888;
+  line-height: 1.5;
+}
+
+/* ── Text Banner ── */
+
+.textBanner {
+  padding: 40px 28px;
+  word-break: keep-all;
+  border-top: 1px solid rgba(0, 0, 0, 0.04);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.textBannerHeadline {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1.45;
+  letter-spacing: -0.03em;
+  white-space: pre-line;
+}
+
+.textBannerBody {
+  margin: 14px 0 0;
+  font-size: 14px;
+  line-height: 1.8;
+  opacity: 0.75;
+}
+
+/* ── Promo Banner ── */
+
+.promoBanner {
+  padding: 36px 24px;
+  text-align: center;
+  border-top: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.promoBannerDiscount {
+  display: inline-block;
+  margin: 0 0 8px;
+  padding: 4px 14px;
+  border-radius: 999px;
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.promoBannerTitle {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.promoBannerSubtitle {
+  margin: 6px 0 0;
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+.promoBannerCta {
+  display: inline-block;
+  margin: 20px 0 0;
+  padding: 14px 40px;
+  border: none;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.15s;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.promoBannerCta:hover {
+  opacity: 0.9;
+}
+
+/* ── Ranking Section ── */
+
+.rankingSection {
+  padding: 20px 24px 16px;
+}
+
+.rankingHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 16px;
+}
+
+.rankingTitle {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 800;
+  color: #2d2d2d;
+}
+
+.rankingBadge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #5b8c3e;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.rankingItem {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.rankingItem:last-child {
+  border-bottom: none;
+}
+
+.rankingNumber {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: #5b8c3e;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.rankingItemImage {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #eee;
+  flex-shrink: 0;
+}
+
+.rankingItemImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.rankingItemCopy {
+  flex: 1;
+  min-width: 0;
+}
+
+.rankingItemName {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2d2d2d;
+}
+
+.rankingItemDescription {
+  margin: 2px 0 0;
+  font-size: 11px;
+  color: #888;
+}
+
+/* ── Story Section ── */
+
+.storySection {
+  padding: 20px 24px 16px;
+}
+
+.storySectionTitle {
+  margin: 0 0 16px;
+  font-size: 17px;
+  font-weight: 800;
+  color: #2d2d2d;
+  text-align: center;
+}
+
+.storyStep {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+}
+
+.storyStepImage {
+  width: 100%;
+  max-width: 280px;
+  aspect-ratio: 4/3;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #eee;
+}
+
+.storyStepImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.storyStepCaption {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #2d2d2d;
+  text-align: center;
+}
+
+.storyStepDescription {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: #888;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.storyDivider {
+  display: flex;
+  justify-content: center;
+  padding: 4px 0;
+  color: #ccc;
+  font-size: 18px;
+}
+
+/* ── Chef Profile ── */
+
+.chefProfile {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 12px 20px;
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(91, 140, 62, 0.08), rgba(91, 140, 62, 0.02));
+  border: 1px solid rgba(91, 140, 62, 0.1);
+  border-radius: 18px;
+}
+
+.chefProfileImage {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(135deg, #e8e4db, #ddd);
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.chefProfileImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.chefProfileCopy {
+  flex: 1;
+  min-width: 0;
+}
+
+.chefProfileName {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #2d2d2d;
+}
+
+.chefProfileTitle {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: #5b8c3e;
+  font-weight: 600;
+}
+
+.chefProfileQuote {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: #666;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.chefProfileCredentials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chefProfileCredential {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(91, 140, 62, 0.12);
+  font-size: 10px;
+  font-weight: 600;
+  color: #5b8c3e;
+}
+
+/* ── Nutrition Badge ── */
+
+.nutritionBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 16px 24px;
+  background: #f0ede6;
+}
+
+.nutritionItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.nutritionLabel {
+  font-size: 10px;
+  color: #888;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.nutritionValue {
+  font-size: 15px;
+  font-weight: 800;
+  color: #2d2d2d;
+}
+
+/* ── Dark Hero Banner (정월대보름) ── */
+
+.darkHeroBanner {
+  position: relative;
+  width: 100%;
+  padding: 56px 24px 48px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.darkHeroBannerContent {
+  position: relative;
+  z-index: 1;
+}
+
+.darkHeroBannerTheme {
+  display: inline-block;
+  margin: 0 0 8px;
+  padding: 4px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  opacity: 0.8;
+}
+
+.darkHeroBannerTitle {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}
+
+.darkHeroBannerSubtitle {
+  margin: 12px 0 0;
+  font-size: 14px;
+  line-height: 1.6;
+  opacity: 0.75;
+}
+
+/* ── Food Feature (개학, 봄반찬, 원더스푼) ── */
+
+.foodFeature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 24px;
+}
+
+.foodFeatureImageCentered {
+  width: 70%;
+  max-width: 240px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #eee;
+  margin: 0 auto;
+}
+
+.foodFeatureImageFull {
+  width: 100%;
+  aspect-ratio: 4/3;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #eee;
+}
+
+.foodFeatureImageFull img,
+.foodFeatureImageCentered img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.foodFeatureName {
+  margin: 14px 0 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #2d2d2d;
+  text-align: center;
+}
+
+.foodFeatureDescription {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #888;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.foodFeatureCalories {
+  display: inline-block;
+  margin: 8px 0 0;
+  padding: 3px 12px;
+  border-radius: 999px;
+  background: rgba(91, 140, 62, 0.1);
+  font-size: 11px;
+  font-weight: 700;
+  color: #5b8c3e;
+}
+
+/* ── Food Horizontal Card (꽃샘추위, 쭈풋파) ── */
+
+.foodHorizontalCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 24px;
+}
+
+.foodHorizontalCardReverse {
+  flex-direction: row-reverse;
+}
+
+.foodHorizontalCardImage {
+  width: 100px;
+  height: 100px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #eee;
+  flex-shrink: 0;
+}
+
+.foodHorizontalCardImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.foodHorizontalCardCopy {
+  flex: 1;
+  min-width: 0;
+}
+
+.foodHorizontalCardName {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #2d2d2d;
+}
+
+.foodHorizontalCardDescription {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #888;
+  line-height: 1.5;
+}
+
+.foodHorizontalCardBadge {
+  display: inline-block;
+  margin: 6px 0 0;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: #e74c3c;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* ── Intro Text (전체 공통) ── */
+
+.introText {
+  padding: 20px 24px 12px;
+  word-break: keep-all;
+}
+
+.introTextBody {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #555;
+}
+
+.introTextEmphasis {
+  display: block;
+  margin: 8px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #5b8c3e;
+}
+
+/* ── Highlight Text (꽃샘추위, 명절디톡스) ── */
+
+.highlightText {
+  padding: 20px 24px;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.5;
+  text-align: center;
+  color: #2d2d2d;
+  word-break: keep-all;
+}
+
+.highlightTextMark {
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* ── Coupon Banner (정월대보름) ── */
+
+.couponBanner {
+  padding: 24px;
+  text-align: center;
+}
+
+.couponBannerDiscount {
+  display: block;
+  margin: 0;
+  font-size: 42px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.couponBannerTitle {
+  margin: 10px 0 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.couponBannerDescription {
+  margin: 6px 0 0;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+/* ── MD Pick Section (월간집반찬) ── */
+
+.mdPickSection {
+  padding: 20px 24px;
+}
+
+.mdPickHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 14px;
+}
+
+.mdPickBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: #ff6b35;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.mdPickTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #2d2d2d;
+}
+
+.mdPickSubtitle {
+  margin: 2px 0 0 0;
+  font-size: 12px;
+  color: #888;
+}
+
+.mdPickGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+/* ── Ingredient Showcase (쭈미파, 쭈풋파) ── */
+
+.ingredientShowcase {
+  padding: 24px;
+  text-align: center;
+}
+
+.ingredientShowcaseImage {
+  width: 80%;
+  max-width: 260px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto;
+  background: #eee;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.ingredientShowcaseImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ingredientShowcaseName {
+  margin: 18px 0 0;
+  font-size: 22px;
+  font-weight: 800;
+  color: #2d2d2d;
+}
+
+.ingredientShowcaseOrigin {
+  display: inline-block;
+  margin: 6px 0 0;
+  padding: 3px 12px;
+  border-radius: 999px;
+  background: rgba(91, 140, 62, 0.1);
+  font-size: 11px;
+  font-weight: 600;
+  color: #5b8c3e;
+}
+
+.ingredientShowcaseDescription {
+  margin: 12px 0 0;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #666;
+}
+
+.ingredientShowcaseHighlights {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ingredientShowcaseHighlightItem {
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: #f5f0e8;
+  font-size: 12px;
+  font-weight: 600;
+  color: #5b8c3e;
+}
+
+/* ── Image Banner ── */
+
+.imageBanner {
+  width: 100%;
+  overflow: hidden;
+}
+
+.imageBannerRounded {
+  padding: 0 20px;
+}
+
+.imageBannerRounded img {
+  border-radius: 14px;
+}
+
+.imageBanner img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+/* ── Divider ── */
+
+.dividerLine {
+  display: flex;
+  align-items: center;
+  padding: 8px 24px;
+}
+
+.dividerLine::before {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.dividerDot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 24px;
+  color: #ccc;
+  font-size: 6px;
+}
+
+.dividerSpace {
+  height: 24px;
+}
+
+.dividerLeaf {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 24px;
+  color: #5b8c3e;
+  font-size: 16px;
+  opacity: 0.4;
+}
+
+/* ── CTA Button ── */
+
+.ctaButtonWrap {
+  padding: 16px 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  letter-spacing: -0.01em;
+}
+
+.ctaButton:hover {
+  opacity: 0.88;
+}
+
+.ctaButtonSmall {
+  padding: 10px 24px;
+  font-size: 13px;
+}
+
+.ctaButtonMedium {
+  padding: 14px 36px;
+  font-size: 15px;
+}
+
+.ctaButtonLarge {
+  padding: 16px 48px;
+  font-size: 17px;
+  box-shadow: 0 4px 16px rgba(91, 140, 62, 0.3);
+}
+
+.ctaButtonFull {
+  width: 100%;
+}
+
+/* ── Flow Connector (쭈미파, 쭈풋파) ── */
+
+.flowConnector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 24px;
+}
+
+.flowConnectorArrow {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.flowConnectorLabel {
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.6;
+}
+
+/* ── Countdown Badge (봄반찬 마감임박) ── */
+
+.countdownBadge {
+  display: flex;
+  justify-content: center;
+  padding: 10px 24px;
+}
+
+.countdownBadgeInner {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 20px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.countdownBadgePulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: zbPulse 1.5s infinite;
+}
+
+@keyframes zbPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* ── Icon Bullet List (원더스푼, 명절디톡스) ── */
+
+.iconBulletList {
+  padding: 20px 24px;
+}
+
+.iconBulletItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.iconBulletItem:last-child {
+  border-bottom: none;
+}
+
+.iconBulletIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #5b8c3e;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.iconBulletText {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #2d2d2d;
+  line-height: 1.5;
+}
+
+.iconBulletSubtext {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #888;
+  line-height: 1.5;
+}
+
+/* ── Category Tag (원더스푼, 월간집반찬) ── */
+
+.categoryTagWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 24px;
+}
+
+.categoryTag {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* ── Brand Footer (봄반찬, 명절디톡스) ── */
+
+.brandFooter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 36px 24px;
+  margin-top: 8px;
+}
+
+.brandFooterLogo {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.brandFooterLogo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.brandFooterName {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.brandFooterTagline {
+  margin: 0;
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+/* ── Delivery Info ── */
+
+.deliveryInfo {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  padding: 20px 24px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  background: rgba(91, 140, 62, 0.03);
+}
+
+.deliveryInfoItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.deliveryInfoIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(91, 140, 62, 0.1);
+  color: #5b8c3e;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.deliveryInfoLabel {
+  font-size: 10px;
+  color: #888;
+  font-weight: 600;
+}
+
+.deliveryInfoValue {
+  font-size: 12px;
+  font-weight: 700;
+  color: #2d2d2d;
+}
+
+/* ── Testimonial Card ── */
+
+.testimonialCard {
+  margin: 8px 24px;
+  padding: 18px 20px;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.testimonialQuote {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #444;
+  font-style: italic;
+}
+
+.testimonialQuote::before {
+  content: "\201C";
+  font-size: 24px;
+  line-height: 0;
+  vertical-align: -8px;
+  margin-right: 4px;
+  color: #5b8c3e;
+  font-weight: 700;
+}
+
+.testimonialMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px 0 0;
+}
+
+.testimonialAuthor {
+  font-size: 12px;
+  font-weight: 600;
+  color: #888;
+}
+
+.testimonialStars {
+  font-size: 12px;
+  color: #f5c542;
+  letter-spacing: 2px;
+}
+
+/* ── 3-Column Viewer Layout ── */
+
+.viewerLayout {
+  position: relative;
+  margin-top: 18px;
+  padding-left: 194px;
+  padding-right: 334px;
+}
+
+@media (max-width: 1100px) {
+  .viewerLayout {
+    padding-left: 0;
+    padding-right: 300px;
+  }
+  .viewerPalette {
+    display: none;
+  }
+}
+
+.viewerPalette {
+  position: fixed;
+  left: 18px;
+  top: 80px;
+  width: 180px;
+  bottom: 18px;
+  border: 1px solid rgba(18, 33, 47, 0.08);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 12px 40px rgba(18, 33, 47, 0.06);
+  backdrop-filter: blur(10px);
+  padding: 14px;
+  overflow-y: auto;
+  z-index: 20;
+}
+
+.viewerBackButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+  background: none;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #888;
+  transition: background 0.15s;
+}
+
+.viewerBackButton:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.paletteItemCompact {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  color: #555;
+  text-align: left;
+  transition: background 0.12s, border-color 0.12s;
+  margin-bottom: 3px;
+}
+
+.paletteItemCompact:hover {
+  background: rgba(91, 140, 62, 0.06);
+  border-color: rgba(91, 140, 62, 0.2);
+  color: #5b8c3e;
+}
+
+.paletteItemThumb {
+  width: 32px;
+  height: 24px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #faf8f3;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.viewerCenter {
+  min-width: 0;
+}
+
+.viewerCenterHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding: 0 4px;
+}
+
+.viewerInspector {
+  position: fixed;
+  right: 18px;
+  top: 80px;
+  width: 320px;
+  bottom: 18px;
+  border: 1px solid rgba(18, 33, 47, 0.08);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 12px 40px rgba(18, 33, 47, 0.06);
+  backdrop-filter: blur(10px);
+  padding: 16px;
+  overflow-y: auto;
+  z-index: 20;
+}
+
+.inspectorHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.inspectorLabel {
+  font-size: 13px;
+  font-weight: 700;
+  color: #5b8c3e;
+}
+
+.inspectorCloseButton {
+  padding: 4px 10px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  background: none;
+  cursor: pointer;
+  font-size: 11px;
+  color: #888;
+}
+
+.inspectorCloseButton:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.inspectorEmpty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  text-align: center;
+  color: #bbb;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* ── Builder UI ── */
+
+.builderLayout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 18px;
+  margin-top: 18px;
+}
+
+@media (max-width: 900px) {
+  .builderLayout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.builderPalette {
+  border: 1px solid rgba(18, 33, 47, 0.08);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 24px 60px rgba(18, 33, 47, 0.08);
+  backdrop-filter: blur(10px);
+  padding: 18px;
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
+  position: sticky;
+  top: 18px;
+}
+
+.builderPaletteTitle {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #2d2d2d;
+}
+
+.builderPaletteDescription {
+  margin: 0 0 14px;
+  font-size: 11px;
+  color: #888;
+  line-height: 1.5;
+}
+
+.paletteGroup {
+  margin-top: 12px;
+}
+
+.paletteGroupLabel {
+  margin: 0 0 6px;
+  font-size: 10px;
+  font-weight: 800;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.paletteItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  margin-bottom: 6px;
+  text-align: left;
+}
+
+.paletteItem:hover {
+  border-color: rgba(91, 140, 62, 0.4);
+  box-shadow: 0 2px 8px rgba(91, 140, 62, 0.1);
+}
+
+.paletteItemIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(91, 140, 62, 0.1);
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.paletteItemCopy {
+  flex: 1;
+  min-width: 0;
+}
+
+.paletteItemName {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #2d2d2d;
+}
+
+.paletteItemHint {
+  display: block;
+  font-size: 10px;
+  color: #999;
+  margin-top: 1px;
+}
+
+.builderCanvas {
+  border: 1px solid rgba(18, 33, 47, 0.08);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 24px 60px rgba(18, 33, 47, 0.08);
+  backdrop-filter: blur(10px);
+  padding: 18px;
+  min-height: 400px;
+}
+
+.builderCanvasHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.builderCanvasTitle {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #2d2d2d;
+}
+
+.builderCanvasActions {
+  display: flex;
+  gap: 6px;
+}
+
+.builderEmptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 60px 20px;
+  text-align: center;
+  color: #aaa;
+}
+
+.builderEmptyState strong {
+  font-size: 14px;
+  color: #888;
+}
+
+.builderEmptyState p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.blockWrapper {
+  position: relative;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  transition: border-color 0.15s;
+  cursor: pointer;
+}
+
+.blockWrapper:hover {
+  border-color: rgba(91, 140, 62, 0.3);
+}
+
+.blockWrapperSelected {
+  border-color: #5b8c3e;
+}
+
+.blockToolbar {
+  position: absolute;
+  top: -14px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.blockWrapper:hover .blockToolbar,
+.blockWrapperSelected .blockToolbar {
+  opacity: 1;
+}
+
+.blockToolbarButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  color: #666;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.blockToolbarButton:hover {
+  background: #f5f5f5;
+}
+
+.blockToolbarButtonDanger:hover {
+  background: #fee;
+  color: #e74c3c;
+}
+
+/* ── Block Editor Panel ── */
+
+.blockEditorPanel {
+  padding: 0;
+  background: transparent;
+}
+
+.blockEditorTitle {
+  display: none;
+}
+
+.blockEditorField {
+  margin-bottom: 10px;
+}
+
+.blockEditorLabel {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #666;
+}
+
+.blockEditorInput {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  font-size: 13px;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.blockEditorInput:focus {
+  border-color: #5b8c3e;
+}
+
+.blockEditorTextarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  font-size: 13px;
+  background: #fff;
+  outline: none;
+  resize: vertical;
+  min-height: 60px;
+  transition: border-color 0.15s;
+}
+
+.blockEditorTextarea:focus {
+  border-color: #5b8c3e;
+}
+
+.blockEditorColorRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.blockEditorColorSwatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+/* ── Tab Navigation ── */
+
+.tabNav {
+  display: flex;
+  gap: 0;
+  margin-top: 18px;
+  padding: 0 4px;
+}
+
+.tabButton {
+  flex: 1;
+  padding: 14px 20px;
+  border: 1px solid rgba(18, 33, 47, 0.08);
+  border-bottom: none;
+  border-radius: 16px 16px 0 0;
+  background: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
+  font-weight: 600;
+  color: #888;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.tabButton:hover {
+  background: rgba(255, 255, 255, 0.7);
+  color: #555;
+}
+
+.tabButtonActive {
+  flex: 1;
+  padding: 14px 20px;
+  border: 1px solid rgba(18, 33, 47, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.88);
+  border-radius: 16px 16px 0 0;
+  background: rgba(255, 255, 255, 0.88);
+  font-size: 14px;
+  font-weight: 700;
+  color: #2d2d2d;
+  cursor: pointer;
+  box-shadow: 0 -4px 12px rgba(18, 33, 47, 0.04);
+}
+
+.tabContent {
+  border: 1px solid rgba(18, 33, 47, 0.08);
+  border-top: none;
+  border-radius: 0 0 20px 20px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 24px 60px rgba(18, 33, 47, 0.08);
+  backdrop-filter: blur(10px);
+  padding: 18px;
+}
+
+/* ── Image upload in builder ── */
+
+.imageUploadZone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 20px;
+  border: 2px dashed rgba(0, 0, 0, 0.12);
+  border-radius: 10px;
+  cursor: pointer;
+  color: #aaa;
+  font-size: 12px;
+  transition: border-color 0.15s;
+}
+
+.imageUploadZone:hover {
+  border-color: rgba(91, 140, 62, 0.4);
+  color: #5b8c3e;
+}
+
+.addFoodItemButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px;
+  border: 1px dashed rgba(91, 140, 62, 0.3);
+  border-radius: 10px;
+  background: transparent;
+  color: #5b8c3e;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.addFoodItemButton:hover {
+  background: rgba(91, 140, 62, 0.06);
+}

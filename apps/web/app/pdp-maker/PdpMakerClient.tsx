@@ -15,10 +15,14 @@ import {
   type PdpClientSettings
 } from "./pdp-settings";
 import { RATIO_OPTIONS, TONE_OPTIONS, apiJson, prepareImageFile, validateGeminiApiKey } from "./pdp-utils";
+import zbStyles from "../../components/zipbanchan/zipbanchan.module.css";
+import { ZipbanchanViewer } from "../../components/zipbanchan/ZipbanchanViewer";
 
 type PreparedImage = PreparedImageDraft;
+type MakerTab = "general" | "zipbanchan";
 
 export function PdpMakerClient() {
+  const [activeTab, setActiveTab] = useState<MakerTab>("general");
   const [appState, setAppState] = useState<PdpAppState>("upload");
   const [preparedImage, setPreparedImage] = useState<PreparedImage | null>(null);
   const [modelImage, setModelImage] = useState<PreparedImage | null>(null);
@@ -44,7 +48,15 @@ export function PdpMakerClient() {
   const [manualSaveToastToken, setManualSaveToastToken] = useState(0);
   const [isDirty, setIsDirty] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [clientSettings, setClientSettings] = useState<PdpClientSettings>(() => loadPdpClientSettings());
+  const [clientSettings, setClientSettings] = useState<PdpClientSettings>({ customGeminiApiKey: "" });
+  const [expandedStep, setExpandedStep] = useState<number>(0);
+  const [showAnnouncement, setShowAnnouncement] = useState(false);
+  const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
+
+  const goToStep = useCallback((from: number, to: number) => {
+    setCompletedSteps((prev) => { const next = new Set(prev); next.add(from); return next; });
+    setExpandedStep(to);
+  }, []);
   const isApplyingDraftRef = useRef(false);
   const saveInFlightRef = useRef(false);
 
@@ -99,6 +111,7 @@ export function PdpMakerClient() {
       setErrorDetail("");
       setShowErrorDetail(false);
       setNotice(`${file.name} 이미지를 준비했습니다. 설정을 확인한 뒤 AI 분석을 시작해 보세요.`);
+      goToStep(1, 2);
     } catch (error) {
       setErrorMessage(error instanceof Error ? error.message : "이미지를 준비하지 못했습니다.");
       setErrorDetail(error instanceof Error ? `${error.name}: ${error.message}` : String(error));
@@ -379,7 +392,8 @@ export function PdpMakerClient() {
           modelImageFileName: modelImage?.fileName,
           additionalInfo: additionalInfo.trim() || undefined,
           desiredTone: desiredTone.trim() || undefined,
-          aspectRatio
+          aspectRatio,
+          stylePreset: activeTab === "zipbanchan" ? "zipbanchan" : "general"
         })
       }, { geminiApiKey: currentGeminiApiKey });
 
@@ -427,6 +441,19 @@ export function PdpMakerClient() {
     setNotice("개인 Gemini API 키 확인을 마쳤습니다. 이 브라우저에서는 입력한 키로 바로 작업할 수 있습니다.");
   };
 
+  if (appState === "editor" && result && activeTab === "zipbanchan") {
+    return (
+      <main className={styles.page}>
+        <section className={styles.shell}>
+          <ZipbanchanViewer
+            result={result}
+            onReset={() => void handleReset()}
+          />
+        </section>
+      </main>
+    );
+  }
+
   if (appState === "editor" && result) {
     return (
       <>
@@ -461,65 +488,25 @@ export function PdpMakerClient() {
   return (
     <main className={styles.page}>
       <section className={styles.shell}>
-        <header className={styles.toolHeader}>
-          <div className={styles.toolHeaderCopy}>
-            <h1 className={styles.toolTitle}>
-              <button className={styles.brandHomeButton} onClick={() => void handleGoToMain()} type="button">
-                한이룸의 상세페이지 마법사 2.0
-              </button>
-            </h1>
-          </div>
-
+        <header className={styles.toolHeaderCompact}>
+          <button className={styles.brandHomeButton} onClick={() => void handleGoToMain()} type="button">
+            <strong>집반찬연구소</strong> 상세페이지 마법사
+          </button>
           <div className={styles.toolHeaderActions}>
-            <span className={styles.metaPill}>API {apiConnectionLabel}</span>
-            <button className={`${styles.secondaryButton} ${styles.headerActionButton}`} onClick={() => setIsSettingsOpen(true)} type="button">
-              <Settings2 size={16} />
-              설정
+            <span className={styles.metaPill}>{apiConnectionLabel}</span>
+            <button className={styles.headerSettingsButton} onClick={() => setIsSettingsOpen(true)} type="button">
+              <Settings2 size={14} />
             </button>
           </div>
         </header>
 
         {appState !== "processing" ? (
-          <section className={styles.announcementPanel}>
-            <div className={styles.announcementHeader}>
-              <div>
-                <span className={styles.panelLabel}>안내 사항</span>
-                <h2 className={styles.announcementTitle}>사용 전 꼭 확인해 주세요</h2>
-              </div>
-              <span className={styles.announcementBadge}>개인 브라우저 기준 저장</span>
-            </div>
-
-            <div className={styles.announcementGrid}>
-              <article className={styles.announcementItem}>
-                <strong>Gemini API 키는 개인용으로 사용됩니다.</strong>
-                <p>이미지 생성 비용은 각자 입력한 본인 Gemini API 키 기준으로 과금됩니다.</p>
-              </article>
-
-              <article className={styles.announcementItem}>
-                <strong>생성 속도는 Gemini API 서버 영향이 가장 큽니다.</strong>
-                <p>상세페이지 분석과 이미지 생성 시간은 Vercel보다 Gemini 응답 시간의 영향이 더 큽니다.</p>
-              </article>
-
-              <article className={styles.announcementItem}>
-                <strong>API 키와 작업 내용은 서버에 저장되지 않습니다.</strong>
-                <p>입력한 API 키와 작업 초안은 각자 사용자의 PC 브라우저에만 저장되므로 안심하고 사용할 수 있습니다.</p>
-              </article>
-
-              <article className={styles.announcementItem}>
-                <strong>시크릿 모드에서는 저장 내용이 사라질 수 있습니다.</strong>
-                <p>시크릿 모드나 브라우저 저장 공간 초기화 환경에서는 다시 접속했을 때 저장된 작업이 보이지 않을 수 있습니다.</p>
-              </article>
-            </div>
-          </section>
-        ) : null}
-
-        {appState !== "processing" ? (
+          <div className={styles.mainGrid}>
           <section className={styles.savedDraftsPanel}>
             <div className={styles.savedDraftsHeader}>
               <div>
                 <span className={styles.panelLabel}>저장된 작업</span>
                 <h2 className={styles.savedDraftsTitle}>이어서 작업하기</h2>
-                <p className={styles.panelDescription}>수동 저장과 30초 자동 저장으로 남겨둔 초안을 바로 이어서 열 수 있습니다.</p>
               </div>
               <div className={styles.savedDraftsMeta}>
                 <span className={styles.metaPill}>자동 저장 30초</span>
@@ -576,6 +563,262 @@ export function PdpMakerClient() {
               </div>
             )}
           </section>
+
+          <section className={styles.wizardPanel}>
+            <div className={styles.wizardPanelHeader}>
+              <span className={styles.panelLabel}>새 상세페이지</span>
+              <h2 className={styles.savedDraftsTitle}>새로운 컨텐츠 만들기</h2>
+              <p className={styles.panelDescription}>제품 이미지와 설정을 단계별로 입력하면 AI가 상세페이지를 자동 생성합니다.</p>
+            </div>
+
+            {/* Step 1: 스타일 선택 */}
+            <div className={styles.wizardStep}>
+              <button className={styles.wizardStepHeader} onClick={() => setExpandedStep(expandedStep === 0 ? -1 : 0)} type="button">
+                <span className={completedSteps.has(0) ? styles.wizardStepDone : styles.wizardStepNumber}>
+                  {completedSteps.has(0) ? "✓" : "1"}
+                </span>
+                <span className={styles.wizardStepLabel}>
+                  스타일
+                  <small> - {activeTab === "zipbanchan" ? "집반찬연구소" : "일반"}</small>
+                </span>
+                <span className={styles.toggleChevron}>{expandedStep === 0 ? "접기" : "펼치기"}</span>
+              </button>
+              {expandedStep === 0 ? (
+                <div className={styles.wizardStepBody}>
+                  <div className={styles.modelUsageGrid}>
+                    <button
+                      className={activeTab === "general" ? styles.modelUsageCardActive : styles.modelUsageCard}
+                      onClick={() => { setActiveTab("general"); goToStep(0, 1); }}
+                      type="button"
+                    >
+                      <strong>일반</strong>
+                      <span>범용 상세페이지</span>
+                    </button>
+                    <button
+                      className={activeTab === "zipbanchan" ? styles.modelUsageCardActive : styles.modelUsageCard}
+                      onClick={() => { setActiveTab("zipbanchan"); goToStep(0, 1); }}
+                      type="button"
+                    >
+                      <strong>집반찬연구소</strong>
+                      <span>브랜드 스타일 자동 적용</span>
+                    </button>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+
+            {/* Step 2: 제품 이미지 */}
+            <div className={styles.wizardStep}>
+              <button className={styles.wizardStepHeader} onClick={() => setExpandedStep(expandedStep === 1 ? -1 : 1)} type="button">
+                <span className={preparedImage ? styles.wizardStepDone : styles.wizardStepNumber}>
+                  {preparedImage ? "✓" : "2"}
+                </span>
+                <span className={styles.wizardStepLabel}>
+                  제품 이미지
+                  {preparedImage ? <small> - {preparedImageDisplayName}</small> : null}
+                </span>
+                <span className={styles.toggleChevron}>{expandedStep === 1 ? "접기" : "펼치기"}</span>
+              </button>
+              {expandedStep === 1 ? (
+                <div className={styles.wizardStepBody}>
+                  <UploadDropzone
+                    compact
+                    description="JPG, PNG, WEBP (최대 10MB)"
+                    hint={preparedImage?.fileName ? `선택됨: ${preparedImageDisplayName}` : "클릭 또는 드래그"}
+                    onSelect={handlePreparedImage}
+                    selectedFileName={preparedImage?.fileName}
+                    title="제품 이미지를 업로드하세요"
+                  />
+                  {preparedImage ? (
+                    <div className={styles.wizardPreviewRow}>
+                      <img alt={preparedImage.fileName} className={styles.wizardPreviewThumb} src={preparedImage.previewUrl} />
+                      <span>{preparedImageDisplayName}</span>
+                    </div>
+                  ) : null}
+                </div>
+              ) : null}
+            </div>
+
+            {/* Step 2: 모델 이미지 (선택) */}
+            <div className={styles.wizardStep}>
+              <button className={styles.wizardStepHeader} onClick={() => setExpandedStep(expandedStep === 2 ? 0 : 2)} type="button">
+                <span className={modelImage ? styles.wizardStepDone : styles.wizardStepNumber}>
+                  {modelImage ? "✓" : "3"}
+                </span>
+                <span className={styles.wizardStepLabel}>
+                  모델 이미지
+                  <small> - {modelImage ? modelImageDisplayName : "선택 사항"}</small>
+                </span>
+                <span className={styles.toggleChevron}>{expandedStep === 2 ? "접기" : "펼치기"}</span>
+              </button>
+              {expandedStep === 2 ? (
+                <div className={styles.wizardStepBody}>
+                  <UploadDropzone
+                    compact
+                    description="인물 이미지 (선택 사항)"
+                    hint={modelImage?.fileName ? `선택됨: ${modelImageDisplayName}` : "클릭 또는 드래그"}
+                    onSelect={async (file) => { await handleModelImage(file); goToStep(2, 21); }}
+                    selectedFileName={modelImage?.fileName}
+                    title="모델 이미지를 업로드하세요"
+                  />
+                  {modelImage ? (
+                    <div className={styles.wizardPreviewRow}>
+                      <img alt={modelImage.fileName} className={styles.wizardPreviewThumb} src={modelImage.previewUrl} />
+                      <span>{modelImageDisplayName}</span>
+                      <button className={styles.inlineButton} onClick={() => { setModelImage(null); setModelImageUsage(null); }} type="button">
+                        <Trash2 size={12} /> 제거
+                      </button>
+                    </div>
+                  ) : null}
+                  <button className={styles.inlineButton} onClick={() => goToStep(2, modelImage ? 21 : 3)} type="button" style={{ marginTop: 8 }}>
+                    {modelImage ? "다음 →" : "건너뛰기 →"}
+                  </button>
+                </div>
+              ) : null}
+            </div>
+
+            {/* Step 3-1: 모델 적용 위치 (모델 이미지 있을 때만) */}
+            {modelImage ? (
+              <div className={styles.wizardStep}>
+                <button className={styles.wizardStepHeader} onClick={() => setExpandedStep(expandedStep === 21 ? -1 : 21)} type="button">
+                  <span className={modelImageUsage ? styles.wizardStepDone : styles.wizardStepNumber}>
+                    {modelImageUsage ? "✓" : "-"}
+                  </span>
+                  <span className={styles.wizardStepLabel}>
+                    모델 적용 위치
+                    <small> - {modelImageUsage === "hero-only" ? "히어로만" : modelImageUsage === "all-sections" ? "전체" : "선택 필요"}</small>
+                  </span>
+                  <span className={styles.toggleChevron}>{expandedStep === 21 ? "접기" : "펼치기"}</span>
+                </button>
+                {expandedStep === 21 ? (
+                  <div className={styles.wizardStepBody}>
+                    <div className={styles.modelUsageGrid}>
+                      <button
+                        className={modelImageUsage === "hero-only" ? styles.modelUsageCardActive : styles.modelUsageCard}
+                        onClick={() => { setModelImageUsage("hero-only"); goToStep(21, 3); }}
+                        type="button"
+                      >
+                        <strong>히어로에만</strong>
+                        <span>첫 섹션에만 적용</span>
+                      </button>
+                      <button
+                        className={modelImageUsage === "all-sections" ? styles.modelUsageCardActive : styles.modelUsageCard}
+                        onClick={() => { setModelImageUsage("all-sections"); goToStep(21, 3); }}
+                        type="button"
+                      >
+                        <strong>전체 적용</strong>
+                        <span>모든 모델컷에 적용</span>
+                      </button>
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
+
+            {/* Step 3: 추가 정보 */}
+            <div className={styles.wizardStep}>
+              <button className={styles.wizardStepHeader} onClick={() => setExpandedStep(expandedStep === 3 ? 0 : 3)} type="button">
+                <span className={completedSteps.has(3) ? styles.wizardStepDone : styles.wizardStepNumber}>{completedSteps.has(3) ? "✓" : "4"}</span>
+                <span className={styles.wizardStepLabel}>
+                  추가 정보
+                  <small> - {additionalInfo.trim() ? additionalInfo.trim().slice(0, 20) + "..." : "선택 사항"}</small>
+                </span>
+                <span className={styles.toggleChevron}>{expandedStep === 3 ? "접기" : "펼치기"}</span>
+              </button>
+              {expandedStep === 3 ? (
+                <div className={styles.wizardStepBody}>
+                  <textarea
+                    className={styles.textarea}
+                    onChange={(e) => setAdditionalInfo(e.target.value)}
+                    placeholder="예: 20대 여성, 여름 시즌, 프리미엄 이미지 강조"
+                    rows={3}
+                    value={additionalInfo}
+                  />
+                  <button className={styles.inlineButton} onClick={() => goToStep(3, 4)} type="button" style={{ marginTop: 8 }}>
+                    {additionalInfo.trim() ? "다음 →" : "건너뛰기 →"}
+                  </button>
+                </div>
+              ) : null}
+            </div>
+
+            {/* Step 4: 톤 */}
+            <div className={styles.wizardStep}>
+              <button className={styles.wizardStepHeader} onClick={() => setExpandedStep(expandedStep === 4 ? 0 : 4)} type="button">
+                <span className={completedSteps.has(4) ? styles.wizardStepDone : styles.wizardStepNumber}>{completedSteps.has(4) ? "✓" : "5"}</span>
+                <span className={styles.wizardStepLabel}>
+                  톤
+                  <small> - {selectedToneLabel}</small>
+                </span>
+                <span className={styles.toggleChevron}>{expandedStep === 4 ? "접기" : "펼치기"}</span>
+              </button>
+              {expandedStep === 4 ? (
+                <div className={styles.wizardStepBody}>
+                  <div className={styles.toneGrid}>
+                    {TONE_OPTIONS.map((tone) => {
+                      const value = tone === "AI 자동 추천" ? "" : tone;
+                      return (
+                        <button
+                          className={desiredTone === value ? styles.toneButtonActive : styles.toneButton}
+                          key={tone}
+                          onClick={() => { setDesiredTone(value); goToStep(4, 5); }}
+                          type="button"
+                        >
+                          {tone}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : null}
+            </div>
+
+            {/* Step 5: 비율 */}
+            <div className={styles.wizardStep}>
+              <button className={styles.wizardStepHeader} onClick={() => setExpandedStep(expandedStep === 5 ? 0 : 5)} type="button">
+                <span className={completedSteps.has(5) ? styles.wizardStepDone : styles.wizardStepNumber}>{completedSteps.has(5) ? "✓" : "6"}</span>
+                <span className={styles.wizardStepLabel}>
+                  비율
+                  <small> - {selectedRatio.label}</small>
+                </span>
+                <span className={styles.toggleChevron}>{expandedStep === 5 ? "접기" : "펼치기"}</span>
+              </button>
+              {expandedStep === 5 ? (
+                <div className={styles.wizardStepBody}>
+                  <div className={styles.ratioGrid}>
+                    {RATIO_OPTIONS.map((option) => (
+                      <button
+                        className={option.value === aspectRatio ? styles.ratioButtonActive : styles.ratioButton}
+                        key={option.value}
+                        onClick={() => { setAspectRatio(option.value); goToStep(5, 0); }}
+                        type="button"
+                      >
+                        <span className={styles.ratioIcon}>{renderRatioIcon(option.icon)}</span>
+                        <strong>{option.label}</strong>
+                        <small>{option.description}</small>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+            </div>
+
+            {/* 에러 표시 */}
+            {errorMessage ? (
+              <div className={styles.errorPanel}>
+                <div className={styles.errorBanner}>
+                  <AlertCircle size={16} />
+                  {errorMessage}
+                </div>
+              </div>
+            ) : null}
+
+            {/* AI 분석 버튼 - 항상 표시 */}
+            <button className={styles.primaryButtonWide} disabled={!canAnalyze} onClick={handleAnalyze} type="button" style={{ marginTop: 12 }}>
+              <Wand2 size={16} />
+              AI 분석 시작하기
+            </button>
+          </section>
+          </div>
         ) : null}
 
         {appState === "processing" ? (
@@ -591,308 +834,7 @@ export function PdpMakerClient() {
               <div className={styles.progressFill} />
             </div>
           </section>
-        ) : (
-          <div className={styles.setupGrid}>
-            <section className={styles.uploadStage}>
-              <div className={styles.panelIntro}>
-                <div className={styles.sectionHeading}>
-                  <span className={styles.sectionStep}>1</span>
-                  <div className={styles.sectionHeadingCopy}>
-                    <h2>원본 이미지 업로드</h2>
-                    <p>한 장만 올려도 됩니다. 업로드 후 AI 전송용으로 자동 압축합니다.</p>
-                  </div>
-                </div>
-              </div>
-
-              <UploadDropzone
-                description="드래그 앤 드롭 또는 클릭으로 JPG, PNG, WEBP 파일을 선택할 수 있습니다."
-                hint={preparedImage?.fileName ? `선택됨: ${preparedImageDisplayName}` : "권장 최대 10MB"}
-                onSelect={handlePreparedImage}
-                selectedFileName={preparedImage?.fileName}
-                title="제품 이미지를 업로드하세요"
-              />
-
-              {preparedImage ? (
-                <div className={styles.uploadPreviewCard}>
-                  <div className={styles.previewFrame}>
-                    <img alt={preparedImage.fileName} className={styles.selectedImage} src={preparedImage.previewUrl} />
-                  </div>
-                  <div className={styles.uploadMeta}>
-                    <strong title={preparedImage.fileName}>{preparedImageDisplayName}</strong>
-                    <div className={styles.metaList}>
-                      <div className={styles.metaItem}>
-                        <span>전송 포맷</span>
-                        <strong>JPEG 1024px</strong>
-                      </div>
-                      <div className={styles.metaItem}>
-                        <span>비율</span>
-                        <strong>{selectedRatio.label}</strong>
-                      </div>
-                      <div className={styles.metaItem}>
-                        <span>톤</span>
-                        <strong>{selectedToneLabel}</strong>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className={styles.emptyStatePanel}>
-                  <Sparkles size={18} />
-                  <div>
-                    <strong>업로드 후 바로 미리보기가 들어옵니다.</strong>
-                    <ul className={styles.emptyList}>
-                      <li>배경이 너무 복잡하지 않은 제품컷이면 분석 품질이 더 안정적입니다.</li>
-                      <li>투명 배경 PNG도 가능하지만, 제품이 충분히 크게 보이는 이미지를 추천합니다.</li>
-                    </ul>
-                  </div>
-                </div>
-              )}
-
-              <div className={styles.optionalUploadBlock}>
-                <div className={styles.optionalUploadHeader}>
-                  <div>
-                    <span className={styles.panelLabel}>선택 옵션</span>
-                    <h3 className={styles.optionalUploadTitle}>모델 이미지 업로드</h3>
-                    <p className={styles.optionalUploadDescription}>
-                      인물 이미지를 올리면 첫 히어로우에만 쓰거나, 모델컷 전체를 같은 인물로 맞출 수 있습니다.
-                    </p>
-                  </div>
-                  {modelImage ? (
-                    <button
-                      className={styles.inlineButton}
-                      onClick={() => {
-                        setModelImage(null);
-                        setModelImageUsage(null);
-                        setErrorMessage("");
-                        setErrorDetail("");
-                        setShowErrorDetail(false);
-                        setNotice("모델 이미지를 제거했습니다. 일반 페르소나 설정으로 계속 편집할 수 있습니다.");
-                      }}
-                      type="button"
-                    >
-                      <Trash2 size={14} />
-                      모델 이미지 제거
-                    </button>
-                  ) : null}
-                </div>
-
-                <UploadDropzone
-                  compact
-                  description="선택 사항입니다. 업로드한 인물 이미지는 모델컷 생성 시 참조 이미지로 사용됩니다."
-                  hint={modelImage?.fileName ? `선택됨: ${modelImageDisplayName}` : "권장 최대 10MB"}
-                  onSelect={handleModelImage}
-                  selectedFileName={modelImage?.fileName}
-                  title="모델 이미지를 업로드하세요"
-                />
-
-                {modelImage ? (
-                  <div className={styles.uploadPreviewCard}>
-                    <div className={styles.previewFrame}>
-                      <img alt={modelImage.fileName} className={styles.selectedImage} src={modelImage.previewUrl} />
-                    </div>
-                    <div className={styles.uploadMeta}>
-                      <strong title={modelImage.fileName}>{modelImageDisplayName}</strong>
-                      <div className={styles.metaList}>
-                        <div className={styles.metaItem}>
-                          <span>적용 대상</span>
-                          <strong>{modelImageUsage === "all-sections" ? "전체 모델컷" : modelImageUsage === "hero-only" ? "히어로우 섹션" : "선택 필요"}</strong>
-                        </div>
-                        <div className={styles.metaItem}>
-                          <span>활용 방식</span>
-                          <strong>참조 모델</strong>
-                        </div>
-                        <div className={styles.metaItem}>
-                          <span>편집 영향</span>
-                          <strong>
-                            {modelImageUsage === "all-sections"
-                              ? "타깃 페르소나 잠금"
-                              : modelImageUsage === "hero-only"
-                                ? "히어로우만 잠금"
-                                : "선택 필요"}
-                          </strong>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className={styles.emptyStatePanel}>
-                    <Sparkles size={18} />
-                    <div>
-                      <strong>없어도 상세페이지 생성은 가능합니다.</strong>
-                      <ul className={styles.emptyList}>
-                        <li>히어로우에 특정 모델컷을 고정하고 싶을 때만 업로드하세요.</li>
-                        <li>전체 일관성 유지를 고르면 모델컷 포함 시 동일 인물 기준으로 생성됩니다.</li>
-                      </ul>
-                    </div>
-                  </div>
-                )}
-
-                {modelImage ? (
-                  <div className={styles.modelUsagePanel}>
-                    <div className={styles.modelUsageHeader}>
-                      <strong>모델 이미지 사용 방식</strong>
-                      <span>이미지를 업로드했다면 아래 두 옵션 중 하나를 선택해야 분석을 시작할 수 있습니다.</span>
-                    </div>
-                    <div className={styles.modelUsageGrid}>
-                      <button
-                        className={modelImageUsage === "hero-only" ? styles.modelUsageCardActive : styles.modelUsageCard}
-                        onClick={() => {
-                          setModelImageUsage("hero-only");
-                          setErrorMessage("");
-                        }}
-                        type="button"
-                      >
-                        <strong>히어로우에만 사용</strong>
-                        <span>맨 첫 히어로우 섹션의 모델컷에만 업로드한 인물을 적용합니다.</span>
-                      </button>
-                      <button
-                        className={modelImageUsage === "all-sections" ? styles.modelUsageCardActive : styles.modelUsageCard}
-                        onClick={() => {
-                          setModelImageUsage("all-sections");
-                          setErrorMessage("");
-                        }}
-                        type="button"
-                      >
-                        <strong>전체 일관성 유지</strong>
-                        <span>모델컷 포함 시 업로드한 인물을 계속 사용하고 타깃 페르소나 설정은 비활성화됩니다.</span>
-                      </button>
-                    </div>
-                    {!modelImageUsage ? (
-                      <div className={styles.inlineWarning}>
-                        <AlertCircle size={16} />
-                        모델 이미지 사용 방식을 선택해야 AI 분석을 시작할 수 있습니다.
-                      </div>
-                    ) : null}
-                  </div>
-                ) : null}
-              </div>
-
-              {errorMessage ? (
-                <div className={styles.errorPanel}>
-                  <div className={styles.errorBanner}>
-                    <AlertCircle size={16} />
-                    {errorMessage}
-                  </div>
-                  {errorDetail ? (
-                    <div className={styles.errorDetailWrap}>
-                      <button className={styles.inlineButton} onClick={() => setShowErrorDetail((current) => !current)} type="button">
-                        {showErrorDetail ? "로그 숨기기" : "로그 보기"}
-                      </button>
-                      {showErrorDetail ? (
-                        <div className={styles.errorDetail}>
-                          <div className={styles.errorDetailHeader}>
-                            <strong>API Detail</strong>
-                            <button className={styles.inlineButton} onClick={() => navigator.clipboard.writeText(errorDetail)} type="button">
-                              <Copy size={14} />
-                              복사
-                            </button>
-                          </div>
-                          <pre>{errorDetail}</pre>
-                        </div>
-                      ) : null}
-                    </div>
-                  ) : null}
-                </div>
-              ) : null}
-            </section>
-
-            <aside className={styles.controlRail}>
-              <div className={styles.panelIntro}>
-                <div className={styles.sectionHeading}>
-                  <span className={styles.sectionStep}>2</span>
-                  <div className={styles.sectionHeadingCopy}>
-                    <h2>생성 설정</h2>
-                    <p>상품 맥락과 원하는 분위기를 정하면 첫 분석 결과가 훨씬 정확해집니다.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className={styles.fieldGroup}>
-                <label className={styles.fieldLabel} htmlFor="additionalInfo">
-                  추가 정보
-                </label>
-                <textarea
-                  className={styles.textarea}
-                  id="additionalInfo"
-                  onChange={(event) => setAdditionalInfo(event.target.value)}
-                  placeholder="예: 20대 여성, 여름 시즌, 네이버 스마트스토어용, 프리미엄 보습 이미지 강조"
-                  rows={5}
-                  value={additionalInfo}
-                />
-              </div>
-
-              <div className={styles.fieldGroup}>
-                <span className={styles.fieldLabel}>원하는 톤</span>
-                <div className={styles.toneGrid}>
-                  {TONE_OPTIONS.map((tone) => {
-                    const value = tone === "AI 자동 추천" ? "" : tone;
-                    const isActive = desiredTone === value;
-
-                    return (
-                      <button
-                        className={isActive ? styles.toneButtonActive : styles.toneButton}
-                        key={tone}
-                        onClick={() => setDesiredTone(value)}
-                        type="button"
-                      >
-                        {tone}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div className={styles.fieldGroup}>
-                <span className={styles.fieldLabel}>이미지 비율</span>
-                <div className={styles.ratioGrid}>
-                  {RATIO_OPTIONS.map((option) => (
-                    <button
-                      className={option.value === aspectRatio ? styles.ratioButtonActive : styles.ratioButton}
-                      key={option.value}
-                      onClick={() => setAspectRatio(option.value)}
-                      type="button"
-                    >
-                      <span className={styles.ratioIcon}>{renderRatioIcon(option.icon)}</span>
-                      <strong>{option.label}</strong>
-                      <small>{option.description}</small>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className={styles.noticePanel}>
-                <div className={styles.noticeTitle}>
-                  <Sparkles size={16} />
-                  현재 세션 안내
-                </div>
-                <p>{notice}</p>
-                <div className={styles.noticeMeta}>
-                  <div className={styles.noticeMetaItem}>
-                    <span>선택한 톤</span>
-                    <strong>{selectedToneLabel}</strong>
-                  </div>
-                  <div className={styles.noticeMetaItem}>
-                    <span>선택한 비율</span>
-                    <strong>{selectedRatio.label}</strong>
-                  </div>
-                  <div className={styles.noticeMetaItem}>
-                    <span>저장 상태</span>
-                    <strong>{saveState === "saving" ? "저장 중" : lastSavedAt ? formatSavedDraftDate(lastSavedAt) : "미저장"}</strong>
-                  </div>
-                </div>
-              </div>
-
-              <button className={styles.primaryButtonWide} disabled={!canAnalyze} onClick={handleAnalyze} type="button">
-                <Wand2 size={16} />
-                AI 분석 시작하기
-              </button>
-
-              <p className={styles.helperCopy}>
-                첫 분석에서는 블루프린트와 함께 첫 섹션 이미지까지 자동 생성됩니다. 모델 이미지를 올렸다면 사용 방식을 먼저 고른 뒤 시작해 주세요.
-              </p>
-            </aside>
-          </div>
-        )}
+        ) : null}
 
       </section>
 

@@ -1498,7 +1498,7 @@ export function PdpEditor({
           <div>
             <h1 className={styles.editorHeading}>
               <button className={styles.brandHomeButton} onClick={onReset} type="button">
-                한이룸의 상세페이지 마법사 2.0
+                집반찬연구소 상세페이지 마법사 2.0
               </button>
             </h1>
             <p className={styles.editorSubcopy}>섹션 컷을 고르고 텍스트를 배치한 뒤 바로 완성본을 저장하세요.</p>

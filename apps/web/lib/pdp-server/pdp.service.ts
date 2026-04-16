@@ -6,6 +6,7 @@ import type {
   PdpGuidePriorityMode,
   PdpAnalyzeRequest,
   PdpErrorCode,
+  PdpStylePreset,
   SectionBlueprint
 } from "../shared";
 
@@ -117,7 +118,7 @@ export class PdpService {
               buildHighResolutionInlinePart(mimeType, normalizedImage),
               ...(referenceModelImage ? [buildHighResolutionInlinePart(referenceModelImage.mimeType, referenceModelImage.base64)] : []),
               {
-                text: buildAnalyzePrompt(request.additionalInfo, request.desiredTone, referenceModelProfile)
+                text: buildAnalyzePrompt(request.additionalInfo, request.desiredTone, referenceModelProfile, request.stylePreset)
               }
             ]
           }
@@ -617,7 +618,8 @@ function sanitizeBase64Payload(input: string) {
 function buildAnalyzePrompt(
   additionalInfo?: string,
   desiredTone?: string,
-  referenceModelProfile?: ReferenceModelProfile | null
+  referenceModelProfile?: ReferenceModelProfile | null,
+  stylePreset?: PdpStylePreset
 ) {
   const referenceModelPrompt = referenceModelProfile
     ? `[참고 모델 이미지가 함께 제공됨]: 모델이 포함되는 컷은 업로드된 동일 인물의 정체성을 유지해야 합니다.
@@ -626,15 +628,98 @@ function buildAnalyzePrompt(
 - 전체 인상: ${referenceModelProfile.overallVibe}`
     : "";
 
+  const isZipbanchan = stylePreset === "zipbanchan";
+
+  const zipbanchanStyleGuide = isZipbanchan
+    ? `
+# 집반찬연구소 브랜드 스타일 가이드 (반드시 적용)
+
+## 디자인 톤 & 무드
+- 따뜻하고 가정적인 느낌. "엄마가 해준 집밥" 감성
+- 친근하고 편안한 구어체 ("~해요", "~할까요?", "~드릴게요")
+- 계절감과 테마가 있는 기획전 스타일 (예: 봄반찬, 홈런식탁, 꽃샘추위)
+
+## 컬러 팔레트
+- 메인 배경: 따뜻한 크림/베이지 (#FAF8F3, #F5F0E8, #F0EDE6)
+- 포인트 컬러: 자연 그린 (#5B8C3E, #4A7A2E) - 브랜드 시그니처
+- 보조 강조: 따뜻한 옐로우 (#F5C542), 레드 (#E74C3C, 할인/배지)
+- 테마별 변형: 네이비(#2C3E6B, 정월대보름), 라이트그린(#E8F0D8, 봄)
+- 글자색: 진한 차콜 (#2D2D2D), 서브텍스트 회색 (#888888)
+
+## 타이포그래피 & 카피
+- 헤드라인: 굵은 산세리프, 28-32px 급, 자간 -0.02em
+- 서브카피: 14px, 행간 1.6, 부드러운 설명체
+- 포인트 텍스트: 컬러 강조 (그린 또는 옐로우 하이라이트)
+- 절대로 딱딱한 광고 문구 금지. 대화하듯 자연스러운 톤 유지
+
+## 레이아웃 패턴
+- 세로 단일 컬럼 (모바일 퍼스트, 420px 기준)
+- 히어로: 테마 일러스트/사진 + 큰 타이틀 + 서브카피
+- 음식 나열: 2열 그리드 (원형 또는 둥근 사각형 음식 사진 + 이름)
+- 섹션 구분: 아이콘(이모지) + 카테고리명 (예: "🍽️ 메인 요리")
+- 중간 텍스트 배너: 배경색 전환 + 설득 카피 ("밥? 술안주도 가능!")
+- 하단: 프로모션 배너 (할인율 + CTA 버튼)
+
+## 음식 사진 스타일
+- 오버헤드 또는 45도 앵글 촬영
+- 깔끔한 그릇/접시에 담긴 음식
+- 배경은 나무 테이블, 린넨 패브릭, 한식 식기 등 따뜻한 질감
+- 음식이 주인공 - 배경 요소 최소화
+- 그림자 미니멀, 밝고 따뜻한 조명
+- 모델컷보다 음식컷 우선. 첫 섹션도 음식/테마 비주얼이 히어로
+
+## 섹션 구성 패턴 (집반찬연구소 스타일)
+1. 히어로: 테마 배너 (계절/기획전명 + 감성 일러스트 또는 대표 음식 사진)
+2. 카테고리별 음식 나열 (메인 반찬, 국/찌개, 밑반찬 등 카테고리 구분)
+3. 텍스트 배너 (설득 카피 - 이 반찬이 왜 좋은지)
+4. 추가 카테고리 또는 스토리 (재료 이야기, 조리 과정)
+5. 프로모션/CTA (할인 혜택, 주문 유도)
+
+## 이미지 생성 특별 규칙 (집반찬 전용)
+- 모델보다 음식을 중심으로 이미지 생성
+- 한식 반찬 스타일의 플레이팅 연출
+- 따뜻한 자연광 또는 부드러운 실내 조명
+- 배경: 나무 식탁, 한식 식기, 린넨 냅킨 등 홈스타일
+- 포장 용기가 있다면 집반찬연구소 스타일의 심플한 용기 사용
+`
+    : "";
+
+  const sectionCompositionRules = isZipbanchan
+    ? `
+# 섹션 구성 원칙 (집반찬연구소 전용)
+- 첫 섹션은 테마/기획전 히어로 배너로 구성 (모델컷 대신 테마 비주얼 또는 대표 음식 사진)
+- 음식 카테고리별로 섹션을 나누어 구성 (메인 요리, 국/찌개, 밑반찬, 간식 등)
+- 각 카테고리 섹션에는 2-4개의 음식을 그리드로 나열
+- 카테고리 사이에 텍스트 배너로 설득 카피 삽입
+- 베네핏은 음식의 장점 위주 (신선함, 정성, 편리함, 영양)
+- 리뷰보다는 재료 스토리, 조리 과정, 셰프 소개 섹션 우선
+- CTA는 부드러운 톤 ("지금 주문하기" 보다 "이번 주 식탁에 올려보세요")
+- headline은 친근한 구어체로 작성 ("든든한 메인 요리", "가볍고 의외의 꿀조합")
+- 전체적으로 5-7개 섹션으로 구성 (일반 PDP보다 섹션이 많음)
+`
+    : `
+# 섹션 구성 원칙(강제)
+- 베네핏은 3개 고정
+- 근거 섹션은 반드시 결과→조건→해석 3단으로 작성
+- 리뷰 섹션은 전/후 사진보다 사용감 문장 후기 카드 6~12개 우선
+- 사용법/루틴은 선택지를 2~3개로 줄여 선택 피로를 없앨 것
+- CTA는 최소 2회 이상 배치
+- 각 섹션의 이미지는 단순한 제품 누끼나 그래픽이 아닌 소비자의 구매 전환을 유도할 수 있는 고품질 광고 사진 느낌으로 기획할 것
+- 첫 번째 섹션은 구매 전환에 가장 중요하므로 반드시 매력적인 모델이 제품과 함께 연출된 컷으로 프롬프트를 작성할 것
+- 각 섹션 이미지는 해당 헤드라인과 서브헤드라인의 메시지를 시각적으로 전달해야 함
+`;
+
   return `
-이 제품 이미지를 분석하여 4~6개의 핵심 섹션으로 구성된 상세페이지 전체 블루프린트를 설계해주세요.
+이 제품 이미지를 분석하여 ${isZipbanchan ? "5~7" : "4~6"}개의 핵심 섹션으로 구성된 상세페이지 전체 블루프린트를 설계해주세요.
+${isZipbanchan ? "[스타일 프리셋]: 집반찬연구소 기획전 상세페이지 스타일" : ""}
 ${additionalInfo ? `[사용자 추가 정보]: ${additionalInfo}` : ""}
 ${desiredTone ? `[원하는 디자인 톤]: ${desiredTone}` : ""}
 ${referenceModelPrompt}
+${zipbanchanStyleGuide}
 
 # 섹션 템플릿(필수 필드)
-- section_id: S1~S6
-- section_name: (예: 히어로/체크리스트/베네핏/근거/사용법/후기 등)
+- section_id: S1~S${isZipbanchan ? "7" : "6"}
+- section_name: ${isZipbanchan ? "(예: 테마 히어로/메인 반찬/국-찌개/밑반찬/설득 카피/재료 스토리/프로모션 등)" : "(예: 히어로/체크리스트/베네핏/근거/사용법/후기 등)"}
 - goal: 이 섹션의 역할(짧은 한 문장)
 - headline: 한국어 1줄(강하게)
 - headline_en: headline의 자연스러운 영어 번역 1줄
@@ -648,24 +733,15 @@ ${referenceModelPrompt}
 - CTA_en: CTA의 자연스러운 영어 번역 1줄
 - layout_notes: 이미지 레이아웃 지시(짧게)
 - compliance_notes: 카테고리별 규제/표현 주의(짧게)
-
-# 섹션 구성 원칙(강제)
-- 베네핏은 3개 고정
-- 근거 섹션은 반드시 결과→조건→해석 3단으로 작성
-- 리뷰 섹션은 전/후 사진보다 사용감 문장 후기 카드 6~12개 우선
-- 사용법/루틴은 선택지를 2~3개로 줄여 선택 피로를 없앨 것
-- CTA는 최소 2회 이상 배치
-- 각 섹션의 이미지는 단순한 제품 누끼나 그래픽이 아닌 소비자의 구매 전환을 유도할 수 있는 고품질 광고 사진 느낌으로 기획할 것
-- 첫 번째 섹션은 구매 전환에 가장 중요하므로 반드시 매력적인 모델이 제품과 함께 연출된 컷으로 프롬프트를 작성할 것
-- 각 섹션 이미지는 해당 헤드라인과 서브헤드라인의 메시지를 시각적으로 전달해야 함
+${sectionCompositionRules}
 
 # 섹션별 이미지 생성 프롬프트
-- image_id: IMG_S1~IMG_S6
+- image_id: IMG_S1~IMG_S${isZipbanchan ? "7" : "6"}
 - purpose: 이 이미지가 전달해야 하는 메시지(짧은 한 문장)
 - prompt_ko: 한국어 이미지 생성 프롬프트(1~2문장). 구도, 거리감, 시선 높이, 제품이 프레임에서 차지하는 비중을 함께 명시할 것.
-- prompt_en: 영어 프롬프트(실제 이미지 생성용). Include composition, framing distance, camera angle, product prominence, and the key subject action. Keep it neutral enough that studio/lifestyle/outdoor priority can still be controlled at generation time.
+- prompt_en: 영어 프롬프트(실제 이미지 생성용). Include composition, framing distance, camera angle, product prominence, and the key subject action. Keep it neutral enough that studio/lifestyle/outdoor priority can still be controlled at generation time.${isZipbanchan ? " For Zipbanchan style: warm natural lighting, wooden table setting, Korean side dish plating, minimal props, overhead or 45-degree angle, homestyle ambiance." : ""}
 - negative_prompt: 피해야 할 요소
-- style_guide: 전체 통일 스타일. 스튜디오는 정제된 세트/조명/질감, 라이프스타일은 현실감 있는 공간/행동, 아웃도어는 위치감/공기감/활동성을 분명히 적을 것. 이 값은 디자인 가이드 우선 모드에서만 강하게 적용될 수 있도록 작성할 것.
+- style_guide: ${isZipbanchan ? "집반찬연구소 브랜드 스타일 준수. 따뜻한 크림 톤 배경, 자연 그린 포인트, 한식 플레이팅, 홈스타일 연출. 모델 대신 음식이 주인공." : "전체 통일 스타일. 스튜디오는 정제된 세트/조명/질감, 라이프스타일은 현실감 있는 공간/행동, 아웃도어는 위치감/공기감/활동성을 분명히 적을 것. 이 값은 디자인 가이드 우선 모드에서만 강하게 적용될 수 있도록 작성할 것."}
 - reference_usage: 업로드된 기존 제품 이미지를 어떻게 참고할지. 제품 형태, 라벨, 재질, 색감을 유지하는 기준을 명시할 것.
 - section_name, goal, layout_notes, compliance_notes, purpose, style_guide, reference_usage는 반드시 한국어로 작성할 것
 - 영어는 *_en 필드와 prompt_en에만 사용할 것

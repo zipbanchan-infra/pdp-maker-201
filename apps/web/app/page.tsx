@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
-  title: "한이룸 상세페이지 마법사 20",
+  title: "집반찬연구소 상세페이지 마법사 20",
   description: "제품 이미지를 바탕으로 상세페이지 구조와 카피를 설계하는 전용 프로젝트"
 };
 
@@ -12,7 +12,7 @@ export default function HomePage() {
     <main className={styles.page}>
       <div className={styles.shell}>
         <section className={styles.hero}>
-          <span className={styles.eyebrow}>Hanirum Creative Workspace</span>
+          <span className={styles.eyebrow}>Zipbanchan Creative Workspace</span>
           <h1 className={styles.title}>PDP Maker 20</h1>
           <p className={styles.description}>
             제품 이미지 편집, 섹션 구조 설계, 텍스트 배치 조정, 상세페이지 초안 생성을

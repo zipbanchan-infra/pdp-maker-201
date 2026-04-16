@@ -66,6 +66,8 @@ export interface ImageGenOptions {
   referenceModelImageFileName?: string;
 }
 
+export type PdpStylePreset = "general" | "zipbanchan";
+
 export interface PdpAnalyzeRequest {
   imageBase64: string;
   mimeType: string;
@@ -75,6 +77,7 @@ export interface PdpAnalyzeRequest {
   additionalInfo?: string;
   desiredTone?: string;
   aspectRatio: AspectRatio;
+  stylePreset?: PdpStylePreset;
 }
 
 export interface PdpAnalyzeSuccessResponse {

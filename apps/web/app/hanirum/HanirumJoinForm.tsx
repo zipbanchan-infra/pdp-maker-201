@@ -72,7 +72,7 @@ export function HanirumJoinForm() {
             id="hanirum-name"
             inputMode="text"
             onChange={(event) => setName(event.target.value)}
-            placeholder="예: 한이룸"
+            placeholder="예: 집반찬연구소"
             value={name}
           />
           <button className={styles.submitButton} disabled={isSubmitting} type="submit">

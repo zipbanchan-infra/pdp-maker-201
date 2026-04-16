@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { HanirumJoinForm } from "../HanirumJoinForm";
 
 export const metadata: Metadata = {
-  title: "한이룸 체크인 입력",
+  title: "집반찬연구소 체크인 입력",
   description: "행사 참석자가 이름을 입력해 체크인을 완료하는 페이지"
 };
 
