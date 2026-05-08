@@ -118,7 +118,7 @@ export class PdpService {
               buildHighResolutionInlinePart(mimeType, normalizedImage),
               ...(referenceModelImage ? [buildHighResolutionInlinePart(referenceModelImage.mimeType, referenceModelImage.base64)] : []),
               {
-                text: buildAnalyzePrompt(request.additionalInfo, request.desiredTone, referenceModelProfile, request.stylePreset)
+                text: buildAnalyzePrompt(request.additionalInfo, request.desiredTone, referenceModelProfile, request.stylePreset, request.surveyKnowledgeText, request.surveyRequestText)
               }
             ]
           }
@@ -619,7 +619,9 @@ function buildAnalyzePrompt(
   additionalInfo?: string,
   desiredTone?: string,
   referenceModelProfile?: ReferenceModelProfile | null,
-  stylePreset?: PdpStylePreset
+  stylePreset?: PdpStylePreset,
+  surveyKnowledgeText?: string,
+  surveyRequestText?: string
 ) {
   const referenceModelPrompt = referenceModelProfile
     ? `[참고 모델 이미지가 함께 제공됨]: 모델이 포함되는 컷은 업로드된 동일 인물의 정체성을 유지해야 합니다.
@@ -714,8 +716,10 @@ function buildAnalyzePrompt(
 ${isZipbanchan ? "[스타일 프리셋]: 집반찬연구소 기획전 상세페이지 스타일" : ""}
 ${additionalInfo ? `[사용자 추가 정보]: ${additionalInfo}` : ""}
 ${desiredTone ? `[원하는 디자인 톤]: ${desiredTone}` : ""}
+${surveyRequestText ? `[설문 기반 디렉티브]: ${surveyRequestText}` : ""}
 ${referenceModelPrompt}
 ${zipbanchanStyleGuide}
+${surveyKnowledgeText ? `\n# 셀러 설문 컨텍스트 (Pro 설문 결과 - 반드시 반영)\n${surveyKnowledgeText}` : ""}
 
 # 섹션 템플릿(필수 필드)
 - section_id: S1~S${isZipbanchan ? "7" : "6"}

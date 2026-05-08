@@ -17,6 +17,8 @@ import {
 import { RATIO_OPTIONS, TONE_OPTIONS, apiJson, prepareImageFile, validateGeminiApiKey } from "./pdp-utils";
 import zbStyles from "../../components/zipbanchan/zipbanchan.module.css";
 import { ZipbanchanViewer } from "../../components/zipbanchan/ZipbanchanViewer";
+import type { SurveyAnswers, SurveyTone, SurveyUspKey, SurveyForbiddenKey, SurveyPricePositioning } from "../../lib/shared/survey";
+import { synthesize, TONE_LABELS, USP_LABELS, PRICE_LABELS, FORBIDDEN_LABELS } from "../../lib/shared/survey";
 
 type PreparedImage = PreparedImageDraft;
 type MakerTab = "general" | "zipbanchan";
@@ -52,6 +54,12 @@ export function PdpMakerClient() {
   const [expandedStep, setExpandedStep] = useState<number>(0);
   const [showAnnouncement, setShowAnnouncement] = useState(false);
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
+  const [surveyTone, setSurveyTone] = useState<SurveyTone | undefined>();
+  const [surveyUsp, setSurveyUsp] = useState<SurveyUspKey[]>([]);
+  const [surveyPricePos, setSurveyPricePos] = useState<SurveyPricePositioning | undefined>();
+  const [surveyForbidden, setSurveyForbidden] = useState<SurveyForbiddenKey[]>([]);
+  const [surveyCompetitorEdge, setSurveyCompetitorEdge] = useState("");
+  const [surveyMustInclude, setSurveyMustInclude] = useState("");
 
   const goToStep = useCallback((from: number, to: number) => {
     setCompletedSteps((prev) => { const next = new Set(prev); next.add(from); return next; });
@@ -382,6 +390,25 @@ export function PdpMakerClient() {
 
       setLoadingStep("제품을 분석하고 상세페이지 구조를 설계하는 중입니다.");
 
+      const hasSurvey = surveyTone || surveyUsp.length || surveyForbidden.length || surveyCompetitorEdge.trim() || surveyMustInclude.trim();
+      let surveyKnowledgeText: string | undefined;
+      let surveyRequestText: string | undefined;
+
+      if (hasSurvey) {
+        const surveyAnswers: SurveyAnswers = {
+          channel: "상세페이지",
+          tone: surveyTone,
+          uspRanking: surveyUsp.length ? surveyUsp : undefined,
+          pricePositioning: surveyPricePos,
+          forbidden: surveyForbidden.length ? surveyForbidden : undefined,
+          competitor: surveyCompetitorEdge.trim() ? { ourEdge: surveyCompetitorEdge.trim() } : undefined,
+          mustInclude: surveyMustInclude.trim() || undefined,
+        };
+        const payload = synthesize(surveyAnswers);
+        surveyKnowledgeText = payload.knowledgeText;
+        surveyRequestText = payload.requestText;
+      }
+
       const response = await apiJson<PdpAnalyzeResponse>("/pdp/analyze", {
         method: "POST",
         body: JSON.stringify({
@@ -393,7 +420,9 @@ export function PdpMakerClient() {
           additionalInfo: additionalInfo.trim() || undefined,
           desiredTone: desiredTone.trim() || undefined,
           aspectRatio,
-          stylePreset: activeTab === "zipbanchan" ? "zipbanchan" : "general"
+          stylePreset: activeTab === "zipbanchan" ? "zipbanchan" : "general",
+          surveyKnowledgeText,
+          surveyRequestText,
         })
       }, { geminiApiKey: currentGeminiApiKey });
 
@@ -789,7 +818,7 @@ export function PdpMakerClient() {
                       <button
                         className={option.value === aspectRatio ? styles.ratioButtonActive : styles.ratioButton}
                         key={option.value}
-                        onClick={() => { setAspectRatio(option.value); goToStep(5, 0); }}
+                        onClick={() => { setAspectRatio(option.value); goToStep(5, 6); }}
                         type="button"
                       >
                         <span className={styles.ratioIcon}>{renderRatioIcon(option.icon)}</span>
@@ -798,6 +827,117 @@ export function PdpMakerClient() {
                       </button>
                     ))}
                   </div>
+                </div>
+              ) : null}
+            </div>
+
+            {/* Step 6: USP 우선순위 (선택) */}
+            <div className={styles.wizardStep}>
+              <button className={styles.wizardStepHeader} onClick={() => setExpandedStep(expandedStep === 6 ? -1 : 6)} type="button">
+                <span className={completedSteps.has(6) ? styles.wizardStepDone : styles.wizardStepNumber}>{completedSteps.has(6) ? "✓" : "7"}</span>
+                <span className={styles.wizardStepLabel}>
+                  핵심 소구점
+                  <small> - {surveyUsp.length ? surveyUsp.map((k) => USP_LABELS[k]).join(", ") : "선택 사항"}</small>
+                </span>
+                <span className={styles.toggleChevron}>{expandedStep === 6 ? "접기" : "펼치기"}</span>
+              </button>
+              {expandedStep === 6 ? (
+                <div className={styles.wizardStepBody}>
+                  <p style={{ fontSize: 12, color: "#888", margin: "0 0 10px" }}>제품의 핵심 소구점을 우선순위대로 선택하세요 (최대 3개)</p>
+                  <div className={styles.toneGrid}>
+                    {(Object.keys(USP_LABELS) as SurveyUspKey[]).map((key) => {
+                      const active = surveyUsp.includes(key);
+                      return (
+                        <button
+                          className={active ? styles.toneButtonActive : styles.toneButton}
+                          key={key}
+                          onClick={() => {
+                            setSurveyUsp((prev) =>
+                              active ? prev.filter((k) => k !== key) : prev.length < 3 ? [...prev, key] : prev
+                            );
+                          }}
+                          type="button"
+                        >
+                          {active ? `${surveyUsp.indexOf(key) + 1}. ` : ""}{USP_LABELS[key]}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <button className={styles.inlineButton} onClick={() => goToStep(6, 7)} type="button" style={{ marginTop: 8 }}>
+                    {surveyUsp.length ? "다음 →" : "건너뛰기 →"}
+                  </button>
+                </div>
+              ) : null}
+            </div>
+
+            {/* Step 7: 경쟁사 차별점 + 금지 표현 + 필수 포함 (선택) */}
+            <div className={styles.wizardStep}>
+              <button className={styles.wizardStepHeader} onClick={() => setExpandedStep(expandedStep === 7 ? -1 : 7)} type="button">
+                <span className={completedSteps.has(7) ? styles.wizardStepDone : styles.wizardStepNumber}>{completedSteps.has(7) ? "✓" : "8"}</span>
+                <span className={styles.wizardStepLabel}>
+                  상세 설정
+                  <small> - {surveyCompetitorEdge || surveyForbidden.length || surveyMustInclude ? "입력됨" : "선택 사항"}</small>
+                </span>
+                <span className={styles.toggleChevron}>{expandedStep === 7 ? "접기" : "펼치기"}</span>
+              </button>
+              {expandedStep === 7 ? (
+                <div className={styles.wizardStepBody}>
+                  <div style={{ marginBottom: 14 }}>
+                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#555", marginBottom: 4 }}>경쟁사 대비 우리 차별점</label>
+                    <input
+                      className={styles.textarea}
+                      onChange={(e) => setSurveyCompetitorEdge(e.target.value)}
+                      placeholder="예: 식약처 인증 천연 95%, 국내산 원료만 사용"
+                      style={{ minHeight: "auto", padding: "8px 10px" }}
+                      value={surveyCompetitorEdge}
+                    />
+                  </div>
+                  <div style={{ marginBottom: 14 }}>
+                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#555", marginBottom: 4 }}>가격 포지셔닝</label>
+                    <div className={styles.toneGrid}>
+                      {(Object.keys(PRICE_LABELS) as SurveyPricePositioning[]).map((key) => (
+                        <button
+                          className={surveyPricePos === key ? styles.toneButtonActive : styles.toneButton}
+                          key={key}
+                          onClick={() => setSurveyPricePos(key)}
+                          type="button"
+                        >
+                          {PRICE_LABELS[key]}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div style={{ marginBottom: 14 }}>
+                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#555", marginBottom: 4 }}>금지 표현</label>
+                    <div className={styles.toneGrid}>
+                      {(Object.keys(FORBIDDEN_LABELS) as SurveyForbiddenKey[]).map((key) => {
+                        const active = surveyForbidden.includes(key);
+                        return (
+                          <button
+                            className={active ? styles.toneButtonActive : styles.toneButton}
+                            key={key}
+                            onClick={() => setSurveyForbidden((prev) => active ? prev.filter((k) => k !== key) : [...prev, key])}
+                            type="button"
+                          >
+                            {FORBIDDEN_LABELS[key]}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div style={{ marginBottom: 14 }}>
+                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#555", marginBottom: 4 }}>꼭 넣고 싶은 문구</label>
+                    <input
+                      className={styles.textarea}
+                      onChange={(e) => setSurveyMustInclude(e.target.value)}
+                      placeholder="예: 무료 배송, 100% 환불 보장"
+                      style={{ minHeight: "auto", padding: "8px 10px" }}
+                      value={surveyMustInclude}
+                    />
+                  </div>
+                  <button className={styles.inlineButton} onClick={() => goToStep(7, -1)} type="button">
+                    완료 →
+                  </button>
                 </div>
               ) : null}
             </div>

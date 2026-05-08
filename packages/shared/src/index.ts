@@ -10,4 +10,5 @@ export interface WidgetInitConfig {
 }
 
 export * from "./pdp.js";
+export * from "./survey.js";
 export * from "./tennis.js";

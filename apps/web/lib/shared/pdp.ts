@@ -78,6 +78,8 @@ export interface PdpAnalyzeRequest {
   desiredTone?: string;
   aspectRatio: AspectRatio;
   stylePreset?: PdpStylePreset;
+  surveyKnowledgeText?: string;
+  surveyRequestText?: string;
 }
 
 export interface PdpAnalyzeSuccessResponse {

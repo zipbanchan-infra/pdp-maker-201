@@ -10,4 +10,5 @@ export interface WidgetInitConfig {
 }
 
 export * from "./pdp";
+export * from "./survey";
 export * from "./tennis";
